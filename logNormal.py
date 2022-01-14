@@ -1,11 +1,13 @@
 import pandas as pandas
 from statistics import NormalDist
 
+from common import filterCensoredOnly, printData
+
 
 def survivalFunction(data, i):
     if i == 0:
         return 1
-    return survivalFunction(data, i - 1) * data[i+1][2] / (data[i+1][2] + 1)
+    return survivalFunction(data, i - 1) * data[i + 1][2] / (data[i + 1][2] + 1)
 
 
 def appendIndices(data):
@@ -18,10 +20,9 @@ def inverseNormal(data, i):
     return NormalDist().inv_cdf(1 - survivalFunction(data, i + 1))
 
 
-def printData(data):
-    for entry in data:
-        print(entry)
-
+def plot():
+    pass
+    # todo: log(time) vs inverseNormal()
 
 if __name__ == '__main__':
     pureData = pandas.read_excel('data.xlsx', header=1, skiprows=1)
@@ -30,11 +31,11 @@ if __name__ == '__main__':
     appendIndices(preparedData)
     preparedData.reverse()
 
+    uncensoredData = filterCensoredOnly(preparedData)
+
+    # for i in range(preparedData[0][2]):
+    # print("for i = ", i, " ", survivalFunction(preparedData, i))
+
     #for i in range(preparedData[0][2]):
-        #print("for i = ", i, " ", survivalFunction(preparedData, i))
-
-
-    for i in range(preparedData[0][2]):
-        print("for i =", i + 1, "time =", preparedData[i][0], inverseNormal(preparedData, i))
-
-
+    #    print("for i =", i + 1, "time =", preparedData[i][0],
+    #          inverseNormal(preparedData, i))
