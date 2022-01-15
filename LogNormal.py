@@ -6,7 +6,7 @@ from statistics import NormalDist
 
 from matplotlib import pyplot as plt
 
-from Common import filterCensoredOnly, printData, importData, \
+from Common import importData, \
     filterUncensoredOnly
 
 
@@ -14,10 +14,9 @@ def survivalFunction(data, i):
     print(f"Got {i}")
     if i == 0:
         return 1
-    #print(f"i = {i}")
-    #print(f"data[i+1] = {data[i][2]}")
+    # print(f"i = {i}")
+    # print(f"data[i+1] = {data[i][2]}")
     return survivalFunction(data, i - 1) * data[i][2] / (data[i][2] + 1)
-
 
 
 def appendIndices(data):
@@ -28,11 +27,13 @@ def appendIndices(data):
 def inverseNormal(data, i):
     if i == 0:
         return 0
-    #print(survivalFunction(data, i + 1))
+    # print(survivalFunction(data, i + 1))
     return NormalDist().inv_cdf(1 - survivalFunction(data, i))
 
+
 def adjustZero(data):
-    data[0] = 1.4*-2
+    data[0] = 1.4 * -2
+
 
 def generateLogTimes(data):
     out = list()
@@ -40,12 +41,12 @@ def generateLogTimes(data):
         out.append(math.log(entry[0]))
     return out
 
+
 def execute(filename):
     data = importData(filename)
     data.sort(reverse=True)
     appendIndices(data)
     data.reverse()
-
 
     uncensoredData = filterUncensoredOnly(data)
     print(data)
@@ -54,9 +55,10 @@ def execute(filename):
     survivals = list()
 
     for i in range(len(uncensoredData)):
-        survivals.append(survivalFunction(uncensoredData, len(uncensoredData) - i - 1))
-        #print("for i = ", i, " ", survivalFunction(data, len(uncensoredData)-i-1))
-        #print(f"for i = {i}, rank = {data[i][2]}  S = {survivalFunction(data, len(data) - i - 1)}")
+        survivals.append(
+            survivalFunction(uncensoredData, len(uncensoredData) - i - 1))
+        # print("for i = ", i, " ", survivalFunction(data, len(uncensoredData)-i-1))
+        # print(f"for i = {i}, rank = {data[i][2]}  S = {survivalFunction(data, len(data) - i - 1)}")
 
     print(survivals)
     print(len(survivals))
@@ -68,26 +70,33 @@ def execute(filename):
               f"InvNormal = {inverseNormal(uncensoredData, i)}")
         invNorms.append(inverseNormal(uncensoredData, i))
 
-
-    #print(f"logTimes: {generateLogTimes(data)}")
+    # print(f"logTimes: {generateLogTimes(data)}")
     print(f"invNorms: {invNorms}")
-    adjustZero(invNorms)
+    #adjustZero(invNorms)
 
     # Least square line
     m, b = np.polyfit(np.array(generateLogTimes(uncensoredData)),
                       np.array(invNorms), 1)
 
+    print(f"m = {m}")
     print(f"b = {b}")
     print(f"Again: {invNorms}")
     plt.scatter(generateLogTimes(uncensoredData), invNorms)
     plt.plot(generateLogTimes(uncensoredData), invNorms)
     plt.plot(generateLogTimes(uncensoredData),
              m * np.array(generateLogTimes(uncensoredData)) + b)
+    print(f"B ======= {b}, M ====== {m}")
     axes = plt.gca()
     axes.set_ylim([-3, -1])
+    plt.xlabel("Elapsed time (days)")
+    plt.ylabel("Probit(1-surv)")
     plt.show()
+
+    return [generateLogTimes(uncensoredData),
+            invNorms,
+            generateLogTimes(uncensoredData),
+            m * np.array(generateLogTimes(uncensoredData)) + b]
 
 
 if __name__ == '__main__':
     execute("data.xlsx")
-

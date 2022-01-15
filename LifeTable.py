@@ -76,6 +76,29 @@ def hazard(data, midpoint):
     return survival(data, i) * d / ((n - 0.5 * w) * INTERVAL)
 
 
+def executeGetSurvival(filename, time):
+    # Input data handling
+    time = int(time)
+    data = importData(filename)
+    print(data)
+
+    # Survival function handling
+    survivals = list()
+    for i in range(8):
+        survivals.append(survival(data, i))
+        print(f"For {i}: {survival(data, i)}")
+    print(f"Survivals: {survivals}")
+
+    intervalStart = time - time % INTERVAL
+    interval = intervalStart / INTERVAL
+    if int(interval) >= len(survivals):
+        return 0
+
+    print(int(interval))
+    print(survivals[int(interval)])
+    return survivals[int(interval)]
+
+
 def execute(filename):
     # Input data handling
     data = importData(filename)
@@ -101,8 +124,16 @@ def execute(filename):
     axes = plt.gca()
     axes.set_ylim([0, 1.10])
     axes.set_xlim([0, 20000])
-    # plt.plot(midpoints, hazards)
+    plt.xlabel("Days elapsed")
+    plt.ylabel("Survival Distribution Function")
+
     plt.show()
+    plt.plot(midpoints, hazards)
+    plt.xlabel("Days elapsed")
+    plt.ylabel("Hazard Function")
+    plt.show()
+
+    return [midpoints, survivals, hazards]
 
 
 if __name__ == '__main__':

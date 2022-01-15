@@ -1,9 +1,75 @@
+import os
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog, CENTER
+
+import LifeTable
+import LogNormal
+
+
+def openFile():
+    file = filedialog.askopenfile(mode='r',
+                                  filetypes=[('Excel files', '*.xlsx')])
+    if file:
+        filepath = os.path.abspath(file.name)
+        secondView(file.name)
+
+
+def cleanUpForSecond():
+    fileButton.destroy()
+
+
+def getSurvival(filename, time, label):
+    print(f"filename: {filename}, time: {time}")
+    label['text'] = LifeTable.executeGetSurvival(filename, time)
+
+
+def secondView(filename):
+    cleanUpForSecond()
+    root.geometry('600x400')
+
+    timeLabel = tk.Label(root, text="Enter time")
+    timeLabel.grid(row=0, column=0)
+
+    timeEntry = tk.Entry(root, text="Enter time")
+    timeEntry.grid(row=1, column=0)
+
+    survivalNote = tk.Label(root, text="Survival odds for given time")
+    survivalNote.grid(row=0, column=1)
+
+    survivalLabel = tk.Label(root, text="-")
+    survivalLabel.grid(row=1, column=1)
+
+    survivalButton = tk.Button(root, text="Confirm",
+                               command=lambda: getSurvival("data.xlsx",
+                                                           timeEntry.get(),
+                                                           survivalLabel)
+                               )
+    survivalButton.grid(row=2, column=0)
+
+    logNormalButton = tk.Button(root, text="Display lognormal graph",
+                                command=lambda: LogNormal.execute("data.xlsx"))
+    logNormalButton.grid(row=3, column=0)
+
+    lifeTableButton = tk.Button(root, text="Display life table graphs",
+                                command=lambda: LifeTable.execute("data.xlsx"))
+    lifeTableButton.grid(row=3, column=1)
+
+
 
 root = tk.Tk()
+root.geometry('300x200')
 
-tk.Label(root, text='Classic Label').pack()
-ttk.Label(root, text='Themed Label').pack()
+root.resizable(False, False)
+
+# Create a Button
+fileButton = ttk.Button(root, text="Browse", command=openFile)
+fileButton.place(relx=root.winfo_width() / 2,
+                 rely=root.winfo_height() / 2,
+                 anchor=CENTER)
+
+# button
+# label
+# grid
+# entry
 
 root.mainloop()
