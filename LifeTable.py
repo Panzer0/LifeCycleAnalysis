@@ -42,6 +42,7 @@ def generateMidpoints(intervalPopulations):
         midpoint += INTERVAL
     return out
 
+
 def generateStartpoints(intervalPopulations):
     out = list()
     startpoint = 0
@@ -75,9 +76,9 @@ def hazard(data, midpoint):
     return survival(data, i) * d / ((n - 0.5 * w) * INTERVAL)
 
 
-if __name__ == '__main__':
+def execute(filename):
     # Input data handling
-    data = importData("data.xlsx")
+    data = importData(filename)
     print(data)
 
     # Survival function handling
@@ -86,14 +87,12 @@ if __name__ == '__main__':
         survivals.append(survival(data, i))
         print(f"For {i}: {survival(data, i)}")
 
-
     # Hazard function handling
     midpoints = generateMidpoints(intervalPopulations(data))
     hazards = list()
     for midpoint in midpoints:
         hazards.append(hazard(data, midpoint))
         print(f"For {midpoint} hazard = {hazard(data, midpoint)}")
-
 
     # Plots
     startpoints = generateStartpoints(intervalPopulations(data))
@@ -102,5 +101,9 @@ if __name__ == '__main__':
     axes = plt.gca()
     axes.set_ylim([0, 1.10])
     axes.set_xlim([0, 20000])
-    #plt.plot(midpoints, hazards)
+    # plt.plot(midpoints, hazards)
     plt.show()
+
+
+if __name__ == '__main__':
+    execute("data.xlsx")

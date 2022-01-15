@@ -40,8 +40,8 @@ def generateLogTimes(data):
         out.append(math.log(entry[0]))
     return out
 
-if __name__ == '__main__':
-    data = importData("data.xlsx")
+def execute(filename):
+    data = importData(filename)
     data.sort(reverse=True)
     appendIndices(data)
     data.reverse()
@@ -74,7 +74,8 @@ if __name__ == '__main__':
     adjustZero(invNorms)
 
     # Least square line
-    m, b = np.polyfit(np.array(generateLogTimes(uncensoredData)), np.array(invNorms), 1)
+    m, b = np.polyfit(np.array(generateLogTimes(uncensoredData)),
+                      np.array(invNorms), 1)
 
     print(f"b = {b}")
     print(f"Again: {invNorms}")
@@ -85,4 +86,8 @@ if __name__ == '__main__':
     axes = plt.gca()
     axes.set_ylim([-3, -1])
     plt.show()
+
+
+if __name__ == '__main__':
+    execute("data.xlsx")
 
