@@ -36,15 +36,19 @@ def secondView(filename):
 
     timeLabel = tk.Label(root, text="Enter time")
     timeLabel.grid(row=0, column=0)
+    timeLabel.config(bg="teal")
 
     timeEntry = tk.Entry(root, text="Enter time")
     timeEntry.grid(row=1, column=0)
+    timeEntry.config(bg="gray")
 
     survivalNote = tk.Label(root, text="Survival odds for given time")
     survivalNote.grid(row=0, column=1)
+    survivalNote.config(bg="teal")
 
     survivalLabel = tk.Label(root, text="-")
     survivalLabel.grid(row=1, column=1)
+    survivalLabel.config(bg="teal")
 
     survivalButton = tk.Button(root, text="Confirm",
                                command=lambda: getSurvival("data.xlsx",
@@ -52,10 +56,12 @@ def secondView(filename):
                                                            survivalLabel)
                                )
     survivalButton.grid(row=2, column=0)
+    survivalButton.config(bg="gray")
 
     functionLabel = tk.Label(root, text="")
     functionLabel.grid(row=4, column=0)
     functionLabel.grid(columnspan=2)
+    functionLabel.config(bg="teal")
 
     logNormalButton = tk.Button(root,
                                 text="Display lognormal graph",
@@ -63,17 +69,19 @@ def secondView(filename):
                                                                 functionLabel))
 
     logNormalButton.grid(row=3, column=0)
+    logNormalButton.config(bg="gray")
 
     lifeTableButton = tk.Button(root,
                                 text="Display life table graphs",
                                 command=lambda: LifeTable.execute("data.xlsx"))
-
     lifeTableButton.grid(row=3, column=1)
+    lifeTableButton.config(bg="gray")
 
 
 root = tk.Tk()
 root.configure(bg="Teal")
 root.geometry('300x200')
+root.iconbitmap('icon.ico')
 
 root.resizable(False, False)
 
@@ -89,3 +97,4 @@ fileButton.place(relx=root.winfo_width() / 2,
 # entry
 
 root.mainloop()
+
