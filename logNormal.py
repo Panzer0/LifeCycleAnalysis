@@ -1,7 +1,11 @@
+import math
+
 import pandas as pandas
 from statistics import NormalDist
 
-from common import filterCensoredOnly, printData
+from matplotlib import pyplot as plt
+
+from common import filterCensoredOnly, printData, importData
 
 
 def survivalFunction(data, i):
@@ -16,26 +20,35 @@ def appendIndices(data):
 
 
 def inverseNormal(data, i):
-    print(survivalFunction(data, i + 1))
+    #print(survivalFunction(data, i + 1))
     return NormalDist().inv_cdf(1 - survivalFunction(data, i + 1))
 
-
-def plot():
-    pass
-    # todo: log(time) vs inverseNormal()
+def generateLogTimes(data):
+    out = list()
+    for entry in data:
+        out.append(math.log(entry[0]))
 
 if __name__ == '__main__':
-    pureData = pandas.read_excel('data.xlsx', header=1, skiprows=1)
-    preparedData = [[x[2], x[1]] for x in pureData.values]
-    preparedData.sort(reverse=True)
-    appendIndices(preparedData)
-    preparedData.reverse()
+    data = importData("data.xlsx")
+    data.sort(reverse=True)
+    appendIndices(data)
+    data.reverse()
 
-    uncensoredData = filterCensoredOnly(preparedData)
+    uncensoredData = filterCensoredOnly(data)
 
-    # for i in range(preparedData[0][2]):
-    # print("for i = ", i, " ", survivalFunction(preparedData, i))
+    #for i in range(data[0][2]):
+    #    print("for i = ", i, " ", survivalFunction(data, i))
 
-    #for i in range(preparedData[0][2]):
-    #    print("for i =", i + 1, "time =", preparedData[i][0],
-    #          inverseNormal(preparedData, i))
+
+    invNorms = list()
+    print(len(data))
+    for i in range(len(data)):
+        print(f"for i = {i + 1}, time = {data[i][0]} "
+              f"InvNormal = {inverseNormal(data, i)}")
+        invNorms.append(inverseNormal(data, i))
+
+    print("Test")
+
+    plt.plot(generateLogTimes(data), invNorms)
+    plt.show()
+
