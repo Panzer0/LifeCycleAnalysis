@@ -1,6 +1,7 @@
 import math
 
 import pandas as pandas
+import numpy as np
 from statistics import NormalDist
 
 from matplotlib import pyplot as plt
@@ -72,8 +73,15 @@ if __name__ == '__main__':
     print(f"invNorms: {invNorms}")
     adjustZero(invNorms)
 
-    #plt.plot(generateLogTimes(uncensoredData), survivals)
+    # Least square line
+    m, b = np.polyfit(np.array(generateLogTimes(uncensoredData)), np.array(invNorms), 1)
+
+    print(f"b = {b}")
+    print(f"Again: {invNorms}")
+    plt.scatter(generateLogTimes(uncensoredData), invNorms)
     plt.plot(generateLogTimes(uncensoredData), invNorms)
+    plt.plot(generateLogTimes(uncensoredData),
+             m * np.array(generateLogTimes(uncensoredData)) + b)
     axes = plt.gca()
     axes.set_ylim([-3, -1])
     plt.show()
