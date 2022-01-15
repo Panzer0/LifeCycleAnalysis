@@ -32,7 +32,12 @@ def inverseNormal(data, i):
 
 
 def adjustZero(data):
-    data[0] = 1.4 * -2
+    for i in range(len(data)-1):
+
+        data[i] = data[i + 1]
+    data[-1] = -1.07
+
+
 
 
 def generateLogTimes(data):
@@ -72,30 +77,32 @@ def execute(filename):
 
     # print(f"logTimes: {generateLogTimes(data)}")
     print(f"invNorms: {invNorms}")
-    #adjustZero(invNorms)
+    adjustZero(invNorms)
+
+    uncensoredLogTimes = generateLogTimes(uncensoredData)
+
+    invNorms = invNorms[:-3 or None]
+    uncensoredLogTimes = uncensoredLogTimes[:-3 or None]
 
     # Least square line
-    m, b = np.polyfit(np.array(generateLogTimes(uncensoredData)),
+    a, b = np.polyfit(np.array(uncensoredLogTimes),
                       np.array(invNorms), 1)
 
-    print(f"m = {m}")
+    print(f"m = {a}")
     print(f"b = {b}")
     print(f"Again: {invNorms}")
-    plt.scatter(generateLogTimes(uncensoredData), invNorms)
-    plt.plot(generateLogTimes(uncensoredData), invNorms)
-    plt.plot(generateLogTimes(uncensoredData),
-             m * np.array(generateLogTimes(uncensoredData)) + b)
-    print(f"B ======= {b}, M ====== {m}")
+    plt.scatter(uncensoredLogTimes, invNorms)
+    plt.plot(uncensoredLogTimes, invNorms)
+    plt.plot(uncensoredLogTimes, a * np.array(uncensoredLogTimes) + b)
+    print(f"B ======= {b}, M ====== {a}")
+
     axes = plt.gca()
     axes.set_ylim([-3, -1])
     plt.xlabel("Elapsed time (days)")
     plt.ylabel("Probit(1-surv)")
     plt.show()
 
-    return [generateLogTimes(uncensoredData),
-            invNorms,
-            generateLogTimes(uncensoredData),
-            m * np.array(generateLogTimes(uncensoredData)) + b]
+    return [a, b]
 
 
 if __name__ == '__main__':

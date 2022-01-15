@@ -23,9 +23,16 @@ def getSurvival(filename, time, label):
     label['text'] = LifeTable.executeGetSurvival(filename, time)
 
 
+def handleLogNormal(filename, label):
+    a, b = LogNormal.execute(filename)
+    label['text'] = f"Line equation: \n{a} * x + {b}" \
+                    f"\na = {a}\nb = {b}" \
+                    f"\nλ = {a / b}\nμ = {1 / a}"
+
+
 def secondView(filename):
     cleanUpForSecond()
-    root.geometry('600x400')
+    root.geometry('300x200')
 
     timeLabel = tk.Label(root, text="Enter time")
     timeLabel.grid(row=0, column=0)
@@ -46,17 +53,26 @@ def secondView(filename):
                                )
     survivalButton.grid(row=2, column=0)
 
-    logNormalButton = tk.Button(root, text="Display lognormal graph",
-                                command=lambda: LogNormal.execute("data.xlsx"))
+    functionLabel = tk.Label(root, text="")
+    functionLabel.grid(row=4, column=0)
+    functionLabel.grid(columnspan=2)
+
+    logNormalButton = tk.Button(root,
+                                text="Display lognormal graph",
+                                command=lambda: handleLogNormal("data.xlsx",
+                                                                functionLabel))
+
     logNormalButton.grid(row=3, column=0)
 
-    lifeTableButton = tk.Button(root, text="Display life table graphs",
+    lifeTableButton = tk.Button(root,
+                                text="Display life table graphs",
                                 command=lambda: LifeTable.execute("data.xlsx"))
+
     lifeTableButton.grid(row=3, column=1)
 
 
-
 root = tk.Tk()
+root.configure(bg="Teal")
 root.geometry('300x200')
 
 root.resizable(False, False)
