@@ -1,8 +1,8 @@
 import pandas
 import matplotlib.pyplot as plt
 
-from common import filterUncensoredOnly, filterCensoredOnly, importData
-from logNormal import appendIndices
+from Common import filterUncensoredOnly, filterCensoredOnly, importData
+from LogNormal import appendIndices
 
 INTERVAL = 2000
 
@@ -54,8 +54,8 @@ def generateStartpoints(intervalPopulations):
 def survival(data, i):
     pureIntervals = intervalPopulations(data)
     n = intervalEntering(pureIntervals, len(data))[i]
-    d = intervalPopulations(filterCensoredOnly(data))[i]
-    w = intervalPopulations(filterUncensoredOnly(data))[i]
+    d = intervalPopulations(filterUncensoredOnly(data))[i]
+    w = intervalPopulations(filterCensoredOnly(data))[i]
 
     if i == 0:
         return 1
@@ -69,8 +69,8 @@ def hazard(data, midpoint):
     i = int((midpoint - INTERVAL / 2) / INTERVAL)
     pureIntervals = intervalPopulations(data)
     n = intervalEntering(pureIntervals, len(data))[i]
-    d = intervalPopulations(filterCensoredOnly(data))[i]
-    w = intervalPopulations(filterUncensoredOnly(data))[i]
+    d = intervalPopulations(filterUncensoredOnly(data))[i]
+    w = intervalPopulations(filterCensoredOnly(data))[i]
 
     return survival(data, i) * d / ((n - 0.5 * w) * INTERVAL)
 
@@ -101,6 +101,6 @@ if __name__ == '__main__':
     plt.plot(midpoints, survivals)
     axes = plt.gca()
     axes.set_ylim([0, 1.10])
-    axes.set_xlim([0, None])
+    axes.set_xlim([0, 20000])
     #plt.plot(midpoints, hazards)
     plt.show()

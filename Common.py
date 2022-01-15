@@ -12,7 +12,7 @@ def importData(filename):
 def filterCensoredOnly(data):
     out = list()
     for entry in data:
-        if entry[1] == "F":
+        if entry[1] == "S":
             out.append(entry)
     return out
 
@@ -21,7 +21,7 @@ def filterCensoredOnly(data):
 def filterUncensoredOnly(data):
     out = list()
     for entry in data:
-        if entry[1] == "S":
+        if entry[1] == "F":
             out.append(entry)
     return out
 
